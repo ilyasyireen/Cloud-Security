@@ -1,0 +1,209 @@
+{% extends 'My_Admin/base.html' %}
+{% load static %}
+{% block title %}Manage Rooms - Hotel Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">View Room Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="#" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Room Number</label>
+                            <select name="room_number" class="form-select" required>
+                                <option value="" disabled selected>Select room number</option>
+                                {% for room in rooms %}
+                                    <option value="{{ room.room_number }}">{{ room.room_number }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Room Type</label>
+                            <select name="room_type" class="form-select" required>
+                                <option value="" disabled selected>Select room type</option>
+                                {% for type in room_types %}
+                                    <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Floor</label>
+                            <input type="number" name="floor" class="form-control" placeholder="Enter floor number" min="0" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Availability</label>
+                            <select name="is_available" class="form-select" required>
+                                <option value="True">Available</option>
+                                <option value="False">Not Available</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" id="search_btn" class="btn btn-primary" style="width:200px;">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            <button type="button" class="btn btn-warning update-btn" style="width:200px;">
+                                <i class="bi bi-pencil-square"></i> Update
+                            </button>
+                            <a href="{% url 'View_Room' %}" class="btn btn-secondary" style="width:200px;">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </a>
+                            <button type="reset" class="btn btn-danger" style="width:200px;">
+                                <i class="bi bi-x-circle me-2"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Room Table -->
+<div class="container mt-4">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Room Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="overflow-x:auto; max-height: 400px;">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">ID</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Room Number</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Room Type</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Floor</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Availability</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for room in rooms %}
+                                <tr>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.id }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.room_number }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.room_type.name }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.floor }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.is_available}}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                        <a href="{% url 'delete_room' room.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this Room?');">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Search Room by room number
+    document.getElementById("search_btn").addEventListener("click", function () {
+        let roomNumber = document.querySelector("select[name='room_number']").value;
+
+        if (!roomNumber) {
+            Swal.fire({
+                icon: "warning",
+                title: "Missing Room Number",
+                text: "Please select a room number!",
+            });
+            return;
+        }
+
+        fetch(`/search-room/?room_number=${encodeURIComponent(roomNumber)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    $("select[name='room_type']").val(data.room.room_type_id);
+                    $("input[name='floor']").val(data.room.floor);
+                    $("select[name='is_available']").val(data.room.is_available);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Not Found",
+                        text: data.message
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Something went wrong!"
+                });
+            });
+    });
+
+    // Update Room
+    $(".update-btn").click(function (e) {
+        e.preventDefault();
+
+        let roomNumber = $("select[name='room_number']").val();
+        if (!roomNumber) {
+            Swal.fire({
+                icon: "warning",
+                title: "Select Room",
+                text: "Please choose a room number before updating."
+            });
+            return;
+        }
+
+        var formData = {
+            room_number: roomNumber,
+            room_type_id: $("select[name='room_type']").val(),
+            floor: $("input[name='floor']").val(),
+            is_available: $("select[name='is_available']").val(),
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+
+
+        $.ajax({
+            type: "POST",
+            url: "/update-room/",
+            data: formData,
+            success: function (response) {
+                if (response.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Updated",
+                        text: response.message
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: response.message
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Could not update Room."
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

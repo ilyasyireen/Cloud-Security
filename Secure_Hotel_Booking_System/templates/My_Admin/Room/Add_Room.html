@@ -1,0 +1,120 @@
+{% extends 'My_Admin/base.html' %}
+{% load static %}
+{% block title %}Manage Rooms - Hotel Management System{% endblock %}
+{% block content %}
+<!-- Add Room Form -->
+<div class="container mt-5">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Add Room</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'Add_Room' %}" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Room Number</label>
+                            <input type="text" name="room_number" class="form-control" placeholder="Enter room number" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Room Type</label>
+                            <select name="room_type" class="form-control" required>
+                                <option value="">Select Room Type</option>
+                                {% for type in room_types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Floor</label>
+                            <input type="number" name="floor" class="form-control" placeholder="Enter floor number" min="0" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Availability</label>
+                            <select name="is_available" class="form-control">
+                                <option value="True" selected>Available</option>
+                                <option value="False">Not Available</option>
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success w-50">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Room List Table -->
+<div class="container mt-4" style="margin-left:170px;width:1450px;">
+    <div class="row" style="margin-left:90px;width:1450px;">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Rooms List</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="overflow-x: auto; max-height: 400px;">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr style="background-color:blue;color:white;text-align:center;">
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Room Number</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Room Type</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Floor</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Availability</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Deleted</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Deleted At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for room in rooms %}
+                                <tr style="background-color:black;color:white;text-align:center;">
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.room_number }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.room_type.name }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.floor }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                        {% if room.is_available %}
+                                            <span class="badge bg-success">Available</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Not Available</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.is_deleted }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.deleted_at|date:"Y-m-d H:i"}}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No rooms found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert Messages -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+    <script>
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{{ message.tags }}',
+                title: '{{ message }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        {% endfor %}
+    </script>
+{% endif %}
+{% endblock %}

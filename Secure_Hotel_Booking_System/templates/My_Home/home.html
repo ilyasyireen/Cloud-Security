@@ -1,0 +1,12 @@
+<!-- home.html -->
+{% extends 'My_Home/base.html' %}
+
+{% block title %}Home - Secure Hotel Booking Management System{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h1 class="mt-4">Welcome to the Secure Hotel Booking Management System</h1>
+    <p class="lead">Manage Hotel rooms, residents, and services efficiently.</p>
+    <a href="{% url 'Hotel_Home' %}" class="btn btn-primary">View Hotel Details</a>
+</div>
+{% endblock %}

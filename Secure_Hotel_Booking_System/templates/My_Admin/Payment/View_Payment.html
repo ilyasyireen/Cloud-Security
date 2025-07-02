@@ -1,0 +1,193 @@
+{% extends 'My_Admin/base.html' %}
+{% load static %}
+{% block title %}Manage Payments - Hotel Management System{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">View Payment Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Booking</label>
+                            <select name="booking_id" class="form-select" required>
+                                <option value="" disabled selected>Select booking</option>
+                                {% for booking in bookings %}
+                                    <option value="{{ booking.booking_id }}">{{ booking.booking_id }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amount</label>
+                            <input type="number" step="0.01" name="amount" class="form-control" placeholder="Enter amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Method</label>
+                            <input type="text" name="payment_method" class="form-control" placeholder="e.g., Credit Card" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Transaction ID</label>
+                            <input type="text" name="transaction_id" class="form-control" placeholder="Transaction ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Status</label>
+                            <select name="status" class="form-select" required>
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="failed">Failed</option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" id="search_btn" class="btn btn-primary" style="width:200px;">Search</button>
+                            <button type="button" class="btn btn-warning update-btn" style="width:200px;">Update</button>
+                            <a href="{% url 'view_payments' %}" class="btn btn-secondary" style="width:200px;">Refresh</a>
+                            <button type="reset" class="btn btn-danger" style="width:200px;">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Table Section -->
+<div class="container mt-4">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Payment Records</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Search and Export -->
+                    <div class="d-flex justify-content-between mb-3">
+                        <input type="text" id="searchInput" class="form-control w-50" placeholder="Search payments...">
+                        <button id="exportExcel" class="btn btn-success">Create Excel Report</button>
+                    </div>
+                    <div class="table-responsive" style="overflow-x:auto; max-height: 400px;">
+                        <table class="table table-striped table-hover" id="paymentTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">ID</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Booking ID</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Amount</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Method</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Transaction</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Status</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Payment Date</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.id }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.booking.booking_id }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.amount }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.payment_method }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.transaction_id }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.status }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ payment.payment_date }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                        <a href="{% url 'delete_payment' payment.id %}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this payment?');">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                        <button class="btn btn-success btn-sm print-btn" data-id="{{ payment.id }}">
+                                            <i class="bi bi-printer"></i> Print
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+    // Search by Booking
+    $("#search_btn").click(function () {
+        let bookingId = $("select[name='booking_id']").val();
+        if (!bookingId) {
+            Swal.fire("Please select a booking!");
+            return;
+        }
+
+        fetch(`/search-payment/?booking_id=${bookingId}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    $("input[name='amount']").val(data.payment.amount);
+                    $("input[name='payment_method']").val(data.payment.payment_method);
+                    $("input[name='transaction_id']").val(data.payment.transaction_id);
+                    $("select[name='status']").val(data.payment.status);
+                } else {
+                    Swal.fire("Error", data.message, "error");
+                }
+            });
+    });
+
+    // Update Payment
+    $(".update-btn").click(function () {
+        let formData = {
+            booking_id: $("select[name='booking_id']").val(),
+            amount: $("input[name='amount']").val(),
+            payment_method: $("input[name='payment_method']").val(),
+            transaction_id: $("input[name='transaction_id']").val(),
+            status: $("select[name='status']").val(),
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+
+        $.post("/update-payment/", formData, function (response) {
+            if (response.status === "success") {
+                Swal.fire("Success", response.message, "success").then(() => location.reload());
+            } else {
+                Swal.fire("Error", response.message, "error");
+            }
+        });
+    });
+
+    // Table Filter
+    $("#searchInput").on("keyup", function () {
+        var value = $(this).val().toLowerCase();
+        $("#paymentTable tbody tr").filter(function () {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        });
+    });
+
+    // Print Single Payment
+    $(".print-btn").click(function () {
+        let row = $(this).closest("tr").clone();
+        let printWindow = window.open('', '', 'height=500,width=800');
+        printWindow.document.write('<html><head><title>Print Payment</title>');
+        printWindow.document.write('<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">');
+        printWindow.document.write('</head><body><div class="container"><h3 class="text-center my-3">Payment Record</h3><table class="table table-bordered">');
+        row.find("td").each(function (index) {
+            let header = $("#paymentTable thead th").eq(index).text();
+            printWindow.document.write(`<tr><th>${header}</th><td>${$(this).text()}</td></tr>`);
+        });
+        printWindow.document.write('</table></div></body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    });
+
+    // Export Excel Report
+    $("#exportExcel").click(function () {
+        let table = document.getElementById("paymentTable");
+        let wb = XLSX.utils.table_to_book(table, { sheet: "Payments" });
+        XLSX.writeFile(wb, "Payment_Report.xlsx");
+    });
+</script>
+{% endblock %}

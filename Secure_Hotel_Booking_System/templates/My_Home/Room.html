@@ -1,0 +1,108 @@
+{% extends 'My_Home/base.html' %}
+{% load static %}
+{% block title %}Rooms - Secure Hotel Booking Management System{% endblock %}
+{% block content %}
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade {
+    animation: fadeInUp 1s ease-in-out;
+  }
+
+  .card-custom {
+    background-color: #4B164C;
+    color: white;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+
+  .card-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+  }
+</style>
+
+<div class="container mx-auto px-6 py-12">
+  <div class="text-center animate-fade">
+    <h1 class="text-4xl font-bold text-gray-800">Rooms</h1>
+    <p class="mt-3 text-gray-600 text-lg">Comfortable Living Spaces for Your Stay</p>
+  </div>
+
+  <!-- Hostel Room Options Section -->
+  <div class="mt-16">
+    <h2 class="text-center text-3xl font-bold text-gray-800 animate-fade">Our Room Options</h2>
+    <div class="mt-8 row row-cols-1 row-cols-md-3 g-4">
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/S9.jpg' %}" class="card-img-top" alt="Single Room">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Single Room</h5>
+            <p class="card-text">A private room perfect for individual stays, with modern amenities and a cozy atmosphere.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/S4.jpg' %}" class="card-img-top" alt="Double Room">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Double Room</h5>
+            <p class="card-text">A comfortable room for two with shared or private facilities, ideal for roommates or couples.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/slider4.jpg' %}" class="card-img-top" alt="Deluxe Room">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Deluxe Room</h5>
+            <p class="card-text">A premium room offering enhanced comfort, larger space, and exclusive amenities.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Room Features Section -->
+  <div class="mt-16">
+    <h2 class="text-center text-3xl font-bold text-gray-800 animate-fade">Room Features</h2>
+    <div class="mt-8 row row-cols-1 row-cols-md-3 g-4">
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/S14.jpg' %}" class="card-img-top" alt="Air Conditioning">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Air Conditioning</h5>
+            <p class="card-text">Stay cool and comfortable with fully air-conditioned rooms.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/slider1.jpg' %}" class="card-img-top" alt="Private Bathroom">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Private Bathroom</h5>
+            <p class="card-text">Each room is equipped with a private bathroom for your convenience.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/slider13.jpg' %}" class="card-img-top" alt="Balcony">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Balcony</h5>
+            <p class="card-text">Rooms with balconies offering a scenic view of the surroundings.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+{% endblock %}

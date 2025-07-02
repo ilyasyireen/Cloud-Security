@@ -1,0 +1,108 @@
+{% extends 'My_Home/base.html' %}
+{% load static %}
+{% block title %}Facilities - Secure Hotel Booking Management System{% endblock %}
+{% block content %}
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade {
+    animation: fadeInUp 1s ease-in-out;
+  }
+
+  .card-custom {
+    background-color: #4B164C;
+    color: white;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+
+  .card-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+  }
+</style>
+
+<div class="container mx-auto px-6 py-12">
+  <div class="text-center animate-fade">
+    <h1 class="text-4xl font-bold text-gray-800">Facilities</h1>
+    <p class="mt-3 text-gray-600 text-lg">Comfortable Living with Top-Notch Facilities</p>
+  </div>
+
+  <!-- Hostel Facilities Section -->
+  <div class="mt-16">
+    <h2 class="text-center text-3xl font-bold text-gray-800 animate-fade">Our Hotel Facilities</h2>
+    <div class="mt-8 row row-cols-1 row-cols-md-3 g-4">
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/wifi.jpg' %}" class="card-img-top" alt="Free Wi-Fi">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">High-Speed Wi-Fi</h5>
+            <p class="card-text">Enjoy uninterrupted high-speed internet connectivity throughout the hotel.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/security_room.jpg' %}" class="card-img-top" alt="24/7 Security">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">24/7 Security</h5>
+            <p class="card-text">Round-the-clock surveillance and security personnel to ensure safety.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/cafteria.jpg' %}" class="card-img-top" alt="Cafeteria">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">On-site Cafeteria</h5>
+            <p class="card-text">A fully-equipped cafeteria serving nutritious meals and snacks.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Hostel Features Section -->
+  <div class="mt-16">
+    <h2 class="text-center text-3xl font-bold text-gray-800 animate-fade">Additional Features</h2>
+    <div class="mt-8 row row-cols-1 row-cols-md-3 g-4">
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/study_room.jpg' %}" class="card-img-top" alt="Study Rooms">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Study Rooms</h5>
+            <p class="card-text">Quiet and peaceful study areas equipped with necessary amenities.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/gym.jpg' %}" class="card-img-top" alt="Gym Facility">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Gym Facility</h5>
+            <p class="card-text">A fully-equipped gym to stay fit and healthy during your stay.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/landary.jpg' %}" class="card-img-top" alt="Laundry Service">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Laundry Services</h5>
+            <p class="card-text">Quick and convenient laundry services available on-site.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+{% endblock %}

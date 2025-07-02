@@ -1,0 +1,206 @@
+{% extends 'My_Admin/base.html' %}
+{% load static %}
+{% block title %}Manage Room Types - Hotel Management System{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">View Room Type Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="#" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Room Type Name</label>
+                            <select name="name" class="form-select" required>
+                                <option value="" disabled selected>Select room type</option>
+                                {% for type in room_types %}
+                                    <option value="{{ type.name }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Price Per Night</label>
+                            <input type="number" step="0.01" name="price_per_night" class="form-control" placeholder="Enter price per night" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Capacity</label>
+                            <input type="number" name="capacity" class="form-control" placeholder="Enter capacity" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Amenities</label>
+                            <textarea name="amenities" class="form-control" rows="2" placeholder="List amenities separated by commas"></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" id="search_btn" class="btn btn-primary" style="width:200px;">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            <button type="button" class="btn btn-warning update-btn" style="width:200px;">
+                                <i class="bi bi-pencil-square"></i> Update
+                            </button>
+                            <a href="{% url 'View_RoomType' %}" class="btn btn-secondary" style="width:200px;">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </a>
+                            <button type="reset" class="btn btn-danger" style="width:200px;">
+                                <i class="bi bi-x-circle me-2"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Room Type Table -->
+<div class="container mt-4">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Room Type Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="overflow-x:auto; max-height: 400px;">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">ID</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Name</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Description</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Price/Night</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Capacity</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Amenities</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody style="background-color:black;color:white;border:2px solid white;">
+                                {% for room in room_types %}
+                                <tr>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.id }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.name }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.description }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.price_per_night }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.capacity }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ room.amenities }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                        <a href="{% url 'delete_RoomType' room.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this Room Type?');">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Search Room Type by name
+    document.getElementById("search_btn").addEventListener("click", function () {
+        let roomName = document.querySelector("select[name='name']").value;
+
+        if (!roomName) {
+            Swal.fire({
+                icon: "warning",
+                title: "Missing Room Type Name",
+                text: "Please select the Room Type Name!",
+            });
+            return;
+        }
+
+        fetch(`/search-roomtype/?name=${encodeURIComponent(roomName)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    document.querySelector("textarea[name='description']").value = data.room.description;
+                    document.querySelector("input[name='price_per_night']").value = data.room.price_per_night;
+                    document.querySelector("input[name='capacity']").value = data.room.capacity;
+                    document.querySelector("textarea[name='amenities']").value = data.room.amenities;
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Not Found",
+                        text: data.message
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Something went wrong!"
+                });
+            });
+    });
+
+    // Update Room Type via AJAX
+    $(".update-btn").click(function (e) {
+        e.preventDefault();
+
+        let name = $("select[name='name']").val();
+        if (!name) {
+            Swal.fire({
+                icon: "warning",
+                title: "Select Room Type",
+                text: "Please choose a room type before updating."
+            });
+            return;
+        }
+
+        var formData = {
+            name: name,
+            description: $("textarea[name='description']").val(),
+            price_per_night: $("input[name='price_per_night']").val(),
+            capacity: $("input[name='capacity']").val(),
+            amenities: $("textarea[name='amenities']").val(),
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/update-roomtype/",
+            data: formData,
+            success: function (response) {
+                if (response.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Updated",
+                        text: response.message
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: response.message
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Could not update Room Type."
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

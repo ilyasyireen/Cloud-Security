@@ -1,0 +1,237 @@
+{% extends 'My_Admin/base.html' %}
+{% load static %}
+{% block title %}Manage System Configurations - Admin Panel{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">View Configuration Details</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="#" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Configuration Key</label>
+                            <select name="key" class="form-select" required>
+                                <option value="" disabled selected>Select configuration key</option>
+                                {% for key in keys %}
+                                    {% if key != 'is_sensitive' and key != 'encrypted' %}
+                                        <option value="{{ key }}">{{ key }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Value</label>
+                            <textarea name="value" class="form-control" rows="3" placeholder="Enter configuration value" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="Enter description (optional)"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Is Sensitive?</label>
+                            <select name="is_sensitive" class="form-select" required>
+                                <option value="False">No</option>
+                                <option value="True">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Encrypted?</label>
+                            <select name="encrypted" class="form-select" required>
+                                <option value="False">No</option>
+                                <option value="True">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-center gap-2">
+                            <button type="button" id="search_btn" class="btn btn-primary" style="width:200px;">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            <button type="button" class="btn btn-warning update-btn" style="width:200px;">
+                                <i class="bi bi-pencil-square"></i> Update
+                            </button>
+                            <a href="{% url 'view_system_configurations' %}" class="btn btn-secondary" style="width:200px;">
+                                <i class="bi bi-arrow-clockwise"></i> Refresh
+                            </a>
+                            <button type="reset" class="btn btn-danger" style="width:200px;">
+                                <i class="bi bi-x-circle me-2"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration Table -->
+<div class="container mt-4">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Configuration List</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="overflow-x:auto; max-height: 400px;">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th style="background-color:blue;color:white;text-align:center;">ID</th>
+                                    <th style="background-color:blue;color:white;text-align:center;">Key</th>
+                                    <th style="background-color:blue;color:white;text-align:center;">Value</th>
+                                    <th style="background-color:blue;color:white;text-align:center;">Description</th>
+                                    <th style="background-color:blue;color:white;text-align:center;">Sensitive</th>
+                                    <th style="background-color:blue;color:white;text-align:center;">Encrypted</th>
+                                    <th style="background-color:blue;color:white;text-align:center;">Action</th>
+                                </tr>
+                            </thead>
+                            <!-- Ensure this portion is updated -->
+                            <tbody>
+                                {% if configs %}
+                                    {% for config in configs %}
+                                        <tr>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.id }}</td>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.key }}</td>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.value }}</td>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.description }}</td>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.is_sensitive }}</td>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.encrypted }}</td>
+                                            <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                                <a href="{% url 'delete_system_configuration' config.id %}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this configuration?');">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr><td colspan="7" class="text-center" style="background-color:black;color:white;border:3px solid white;text-align:center;">No configuration records found.</td></tr>
+                                {% endif %}
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    document.getElementById("search_btn").addEventListener("click", function () {
+        let key = document.querySelector("select[name='key']").value;
+
+        if (!key) {
+            Swal.fire({
+                icon: "warning",
+                title: "Missing Key",
+                text: "Please select a configuration key!",
+            });
+            return;
+        }
+
+        if (["is_sensitive", "encrypted"].includes(key)) {
+            Swal.fire({
+                icon: "error",
+                title: "Restricted Key",
+                text: "This configuration cannot be searched.",
+            });
+            return;
+        }
+
+        fetch(`/search-config/?key=${encodeURIComponent(key)}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    $("textarea[name='value']").val(data.config.value);
+                    $("textarea[name='description']").val(data.config.description);
+                    $("select[name='is_sensitive']").val(data.config.is_sensitive.toString());
+                    $("select[name='encrypted']").val(data.config.encrypted.toString());
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Not Found",
+                        text: data.message
+                    });
+                }
+            })
+            .catch(() => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Something went wrong!"
+                });
+            });
+    });
+
+    $(".update-btn").click(function (e) {
+        e.preventDefault();
+
+        let key = $("select[name='key']").val();
+        if (!key) {
+            Swal.fire({
+                icon: "warning",
+                title: "Select Configuration",
+                text: "Please choose a configuration key before updating."
+            });
+            return;
+        }
+
+        if (["is_sensitive", "encrypted"].includes(key)) {
+            Swal.fire({
+                icon: "error",
+                title: "Restricted Key",
+                text: "This configuration cannot be updated.",
+            });
+            return;
+        }
+
+        var formData = {
+            key: key,
+            value: $("textarea[name='value']").val(),
+            description: $("textarea[name='description']").val(),
+            is_sensitive: $("select[name='is_sensitive']").val(),
+            encrypted: $("select[name='encrypted']").val(),
+            csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/update-config/",
+            data: formData,
+            success: function (response) {
+                if (response.status === "success") {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Updated",
+                        text: response.message
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: response.message
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Could not update configuration."
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

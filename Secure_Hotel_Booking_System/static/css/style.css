@@ -1,0 +1,98 @@
+/* General Body Styling */
+body {
+    background-color: #121212;
+    color: #e1e1e1;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    height:auto;
+    padding-top: 30px;
+    background-color:rgb(21, 180, 101);
+    position: fixed;
+    width: 250px;
+    transition: transform 0.3s ease;
+    z-index: 999;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.nav-link {
+    font-size: 16px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #34495e;
+    color: #fff;
+}
+
+.sidebar-active {
+    background-color: #16a085;
+}
+
+/* Toggle Button Styling */
+#toggleSidebar {
+    color: #e1e1e1;
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 10px;
+    background-color:rgb(73, 40, 207);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    color: #e1e1e1;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    background-color: #34495e;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 18px;
+    color: #f8f9fa;
+}
+
+/* Table Styling */
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    color: #e1e1e1;
+}
+
+.table th {
+    background-color: #34495e;
+}
+
+/* Chart Styling */
+.chart-card {
+    background-color: #1c1c1c;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+/* Responsive Layout */
+@media (max-width: 992px) {
+    #sidebar {
+        width: 100%;
+        height: auto;
+    }
+}

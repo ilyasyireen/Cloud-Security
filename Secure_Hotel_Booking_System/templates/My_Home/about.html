@@ -1,0 +1,108 @@
+{% extends 'My_Home/base.html' %}
+{% load static %}
+{% block title %}About Us - Secure Hotel Booking Management System{% endblock %}
+{% block content %}
+<style>
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade {
+    animation: fadeInUp 1s ease-in-out;
+  }
+
+  .card-custom {
+    background-color: #4B164C;
+    color: white;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+
+  .card-custom:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+  }
+</style>
+
+<div class="container mx-auto px-6 py-12">
+  <div class="text-center animate-fade">
+    <h1 class="text-4xl font-bold text-gray-800">About Us</h1>
+    <p class="mt-3 text-gray-600 text-lg">Efficient Secure Hotel Booking Management System, Seamless Living</p>
+  </div>
+
+  <!-- Developer Section -->
+  <div class="mt-16">
+    <h2 class="text-center text-3xl font-bold text-gray-800 animate-fade">Meet the Developers</h2>
+    <div class="mt-8 row row-cols-1 row-cols-md-3 g-4">
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/d1.png' %}" class="card-img-top" alt="Developer 1">
+          <div class="card-body text-center">
+            <h5 class="card-title">Michael Johnson</h5>
+            <p class="card-text">Full Stack Developer - Django, React, Bootstrap, SQL, Cloud Deployment</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/d2.png' %}" class="card-img-top" alt="Developer 2">
+          <div class="card-body text-center">
+            <h5 class="card-title">Sophia Martinez</h5>
+            <p class="card-text">UI/UX Designer - Figma, Tailwind CSS, Bootstrap, Animation, Branding</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/d3.png' %}" class="card-img-top" alt="Developer 3">
+          <div class="card-body text-center">
+            <h5 class="card-title">Daniel Lee</h5>
+            <p class="card-text">Backend Engineer - Python, Django, API Development, Security</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hostel Features Section -->
+  <div class="mt-16">
+    <h2 class="text-center text-3xl font-bold text-gray-800 animate-fade">Why Choose Our Secure Hotel Booking Management System?</h2>
+    <div class="mt-8 row row-cols-1 row-cols-md-3 g-4">
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/d4.jpg' %}" class="card-img-top" alt="Room Allocation">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Efficient Room Allocation</h5>
+            <p class="card-text">Easily manage room assignments with automated allocations and updates.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/d5.jpg' %}" class="card-img-top" alt="Billing System">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Automated Billing System</h5>
+            <p class="card-text">Generate invoices and track payments effortlessly.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col animate-fade">
+        <div class="card card-custom h-100 shadow-lg border-0">
+          <img src="{% static 'Images/d6.jpg' %}" class="card-img-top" alt="Security Management">
+          <div class="card-body text-center">
+            <h5 class="card-title mt-3">Advanced Security Management</h5>
+            <p class="card-text">Monitor entry logs and enhance safety with digital security measures.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br><br>
+{% endblock %}

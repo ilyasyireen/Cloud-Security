@@ -1,0 +1,128 @@
+{% extends 'My_Admin/base.html' %}
+{% load static %}
+{% block title %}Manage System Configurations - Admin Panel{% endblock %}
+
+{% block content %}
+<!-- Add Configuration Form -->
+<div class="container mt-5">
+    <div class="row" style="margin-left:170px;width:1450px;">
+        <div class="col-lg-10 col-md-10">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">Add System Configuration</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'Add_Configuration' %}" novalidate>
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Key</label>
+                            <input type="text" name="key" class="form-control" placeholder="Enter configuration key" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Value</label>
+                            <textarea name="value" class="form-control" rows="3" placeholder="Enter value" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="Enter description (optional)"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Is Sensitive?</label>
+                            <select name="is_sensitive" class="form-control">
+                                <option value="False" selected>No</option>
+                                <option value="True">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Encrypted?</label>
+                            <select name="encrypted" class="form-control">
+                                <option value="False" selected>No</option>
+                                <option value="True">Yes</option>
+                            </select>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success w-50">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Configuration List Table -->
+<div class="container mt-4" style="margin-left:170px;width:1450px;">
+    <div class="row" style="margin-left:90px;width:1450px;">
+        <div class="col-lg-10 col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0">System Configurations List</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="overflow-x: auto; max-height: 400px;">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr style="background-color:blue;color:white;text-align:center;">
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Key</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Value</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Description</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Sensitive</th>
+                                    <th style="background-color:blue;color:white;border:3px solid white;text-align:center;">Encrypted</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for config in configurations %}
+                                <tr style="background-color:black;color:white;text-align:center;">
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.key }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.value }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">{{ config.description|default:"-" }}</td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                        {% if config.is_sensitive %}
+                                            <span class="badge bg-warning text-dark">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-success">No</span>
+                                        {% endif %}
+                                    </td>
+                                    <td style="background-color:black;color:white;border:3px solid white;text-align:center;">
+                                        {% if config.encrypted %}
+                                            <span class="badge bg-info text-dark">Yes</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">No</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted" style="background-color:black;color:white;border:3px solid white;text-align:center;">No configurations found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert Messages -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+    <script>
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{{ message.tags }}',
+                title: '{{ message }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        {% endfor %}
+    </script>
+{% endif %}
+{% endblock %}
