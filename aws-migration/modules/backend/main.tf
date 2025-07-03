@@ -1,6 +1,6 @@
 # S3 bucket resource
 resource "aws_s3_bucket" "backend" {
-  bucket = "codewithmuh-terraform-state-backend-image-99"
+  bucket = "hotelbooking-terraform-state-backend-image-99"
 }
 
 # Setting S3 bucket ownership controls

@@ -61,8 +61,12 @@ WSGI_APPLICATION = "Secure_Hotel_Booking_System.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydatabase',          
+        'USER': 'el',                  
+        'PASSWORD': os.environ.get('DB_PASSWORD'), 
+        'HOST': 'production.c852ioaeyof1.us-east-1.rds.amazonaws.com', 
+        'PORT': '5432',
     }
 }
 
