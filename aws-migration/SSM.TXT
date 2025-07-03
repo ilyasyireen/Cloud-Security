@@ -1,0 +1,1 @@
+aws ssm put-parameter --name "/dev/djangoapi/db/password" --value "admin123" --type String --tags '[{"Key":"Region","Value":"ap-south-1"},{"Key":"Environment", "Value":"Dev"},{"Key":"Service", "Value":"admin123"}]'

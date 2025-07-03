@@ -1,8 +1,3 @@
-variable "db_username" {
-  description = "Database username"
-}
-
-variable "db_password" {
-  description = "Database password"
-  sensitive = true
-}
+# variable "aws_region" {
+#   description = "value of aws region to use for resources."
+# }
