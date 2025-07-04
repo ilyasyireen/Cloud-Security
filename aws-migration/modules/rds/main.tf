@@ -2,10 +2,12 @@
 resource "aws_db_subnet_group" "private_db_subnet" {
   name        = "mysql-rds-private-subnet-group"
   description = "Private subnets for RDS instance"
-  # Subnet IDs must be in two different AZ. Define them explicitly in each subnet with the availability_zone property
-  subnet_ids = var.subnet_ids
-}
+  subnet_ids  = var.subnet_ids  
 
+  tags = {
+    Name = "rds-private-subnet-group"
+  }
+}
 
 resource "aws_security_group" "rds_sg" {
   name        = "${var.environment}-rds-sg"
@@ -13,17 +15,23 @@ resource "aws_security_group" "rds_sg" {
   vpc_id      = var.vpc_id
 
   ingress {
+    description     = "Allow PostgreSQL from ECS"
     protocol        = "tcp"
-    from_port       = "5432"
-    to_port         = "5432"
+    from_port       = 5432
+    to_port         = 5432
     security_groups = [var.ecs_tasks_security_group_id]
   }
 
   egress {
+    description = "Allow all outbound"
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${var.environment}-rds-sg"
   }
 }
 
@@ -39,12 +47,15 @@ resource "aws_db_instance" "production" {
   instance_class          = "db.t4g.micro" # See instance pricing <https://aws.amazon.com/rds/postgres/pricing/?pg=pr&loc=2>
   multi_az                = false
   db_name                 = "mydatabase" # name is deprecated, use db_name instead
-  username                = "codewithmuh"
+  username                = "el"
   skip_final_snapshot     = true
   publicly_accessible     = false
   backup_retention_period = 7
   password                = data.aws_ssm_parameter.db_password.value
-  db_subnet_group_name    = aws_db_subnet_group.private_db_subnet.name # Name of DB subnet group. DB instance will be created in the VPC associated with the DB subnet group.
+  db_subnet_group_name    = aws_db_subnet_group.private_db_subnet.name
+  parameter_group_name    = "default.postgres15"
+  storage_encrypted       = true
+  deletion_protection     = false
 
   vpc_security_group_ids = [
     aws_security_group.rds_sg.id
